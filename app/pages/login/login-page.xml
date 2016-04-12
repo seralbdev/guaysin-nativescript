@@ -1,7 +1,6 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo">
   <StackLayout>
-    <Label text="Fill your password"/>
-    <TextField text="{{password}}"/>
+    <TextField text="{{password}}" secure="true"/>
     <Button text="LogOn" tap="{{ onLogOn }}"/>   
   </StackLayout>
 </Page>
