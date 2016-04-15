@@ -21,7 +21,7 @@ var LoginViewModel = (function (_super) {
             //Secret already saved
             //Try to Decrypt it
             try {
-                if (cryptoservice_1.CryptoServices.CryptoService.UnblockSecret(this.password)) {
+                if (cryptoservice_1.CryptoServices.UnblockSecret(this.password)) {
                     frameModule.topmost().navigate("pages/sitelist/sitelist-page");
                 }
                 else {
@@ -35,7 +35,7 @@ var LoginViewModel = (function (_super) {
         else {
             //First time.
             //Generate random secret, encrypt with pwd and save as app-setting
-            cryptoservice_1.CryptoServices.CryptoService.CreateSecret(this.password);
+            cryptoservice_1.CryptoServices.CreateSecret(this.password);
             frameModule.topmost().navigate("pages/sitelist/sitelist-page");
         }
     };

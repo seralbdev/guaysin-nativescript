@@ -25,7 +25,7 @@ export class LoginViewModel extends observable.Observable {
             //Secret already saved
             //Try to Decrypt it
             try{
-                if(CryptoServices.CryptoService.UnblockSecret(this.password)){
+                if(CryptoServices.UnblockSecret(this.password)){
                     frameModule.topmost().navigate("pages/sitelist/sitelist-page");                   
                 }else{
                     this.showLoginError("Incorrect password");    
@@ -37,7 +37,7 @@ export class LoginViewModel extends observable.Observable {
         }else{
             //First time.
             //Generate random secret, encrypt with pwd and save as app-setting
-            CryptoServices.CryptoService.CreateSecret(this.password);
+            CryptoServices.CreateSecret(this.password);
             frameModule.topmost().navigate("pages/sitelist/sitelist-page");            
         }
     }
