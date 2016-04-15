@@ -3,44 +3,40 @@ var observable = require("data/observable");
 var appSettings = require("application-settings");
 var dialogs = require("ui/dialogs");
 var frameModule = require("ui/frame");
-var CryptoJS = require("crypto-js");
+var cryptoservice_1 = require("../../services/cryptoservice");
 var LoginViewModel = (function (_super) {
     __extends(LoginViewModel, _super);
     function LoginViewModel() {
         _super.call(this);
     }
-    LoginViewModel.prototype.showLoginError = function () {
+    LoginViewModel.prototype.showLoginError = function (msg) {
         dialogs.alert({
             title: "ERROR",
-            message: "Incorrect password",
+            message: msg,
             okButtonText: "OK"
         });
     };
     LoginViewModel.prototype.onLogOn = function () {
-        if (appSettings.hasKey("PASSWORD")) {
-            //Password already saved
-            //Decrypt it and compare
-            console.log(this.password);
-            var encryptedpwd = appSettings.getString("PASSWORD");
-            console.log(encryptedpwd);
-            var plainsavedpwdhex = CryptoJS.AES.decrypt(encryptedpwd, this.password);
-            var plainsavedpwd = plainsavedpwdhex.toString(CryptoJS.enc.Utf8);
-            console.log(plainsavedpwd);
-            if (this.password == plainsavedpwd) {
-                var topmost = frameModule.topmost();
-                topmost.navigate("pages/sitelist/sitelist-page");
+        if (appSettings.hasKey("SECRET")) {
+            //Secret already saved
+            //Try to Decrypt it
+            try {
+                if (cryptoservice_1.CryptoServices.CryptoService.UnblockSecret(this.password)) {
+                    frameModule.topmost().navigate("pages/sitelist/sitelist-page");
+                }
+                else {
+                    this.showLoginError("Incorrect password");
+                }
             }
-            else {
-                this.showLoginError();
+            catch (e) {
+                this.showLoginError("Unexpected error");
             }
         }
         else {
-            //First time.Assign this one as pwd
-            var ciphertexthex = CryptoJS.AES.encrypt(this.password, this.password);
-            console.log(ciphertexthex);
-            var ciphertext = ciphertexthex.toString();
-            console.log(ciphertext);
-            appSettings.setString("PASSWORD", ciphertext);
+            //First time.
+            //Generate random secret, encrypt with pwd and save as app-setting
+            cryptoservice_1.CryptoServices.CryptoService.CreateSecret(this.password);
+            frameModule.topmost().navigate("pages/sitelist/sitelist-page");
         }
     };
     return LoginViewModel;
