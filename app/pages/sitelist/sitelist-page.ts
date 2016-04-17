@@ -4,5 +4,7 @@ import { SiteListViewModel } from "./sitelist-viewmodel"
 
 export function navigatingTo(args: EventData) {
     var page = <Page>args.object;
-    page.bindingContext = new SiteListViewModel();
+    var vm = new SiteListViewModel();
+    vm.LoadSites();
+    page.bindingContext = vm;
 }

@@ -20,6 +20,18 @@ export module CryptoServices{
             var ciphertext = ciphertexthex.toString();            
             appSettings.setString("SECRET",ciphertext);
             secret = randomstring;     
+        }
+        
+        export function Encode(Payload:string):string{
+            if(!secret)
+                throw new Error("Secret not ublocked");
+            return CryptoJS.AES.encrypt(Payload,secret);    
+        }
+        
+        export function Decode(Payload:string):string{
+            if(!secret)
+                throw new Error("Secret not ublocked");
+            return CryptoJS.AES.decrypt(Payload,secret);             
         }     
 }
 

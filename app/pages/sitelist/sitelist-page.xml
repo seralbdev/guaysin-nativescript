@@ -1,5 +1,12 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo">
   <StackLayout>
-    <Label text="SiteList"/> 
+        <ListView items="{{ Sites }}" itemTap="{{ OnSelectSite }}">
+            <ListView.itemTemplate>
+                <StackLayout>
+                    <Label text="{{ Name }}"/>
+                    <Label text="{{ Url }}"/>                
+                </StackLayout>
+            </ListView.itemTemplate>
+        </ListView>
   </StackLayout>
 </Page>
