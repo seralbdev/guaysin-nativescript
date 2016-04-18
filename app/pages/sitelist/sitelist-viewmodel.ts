@@ -1,14 +1,15 @@
 import {Observable} from "data/observable";
 import {ObservableArray} from "data/observable-array";
 import dialogs = require("ui/dialogs");
-import {Sites} from "../../services/site";
+import {Site} from "../../services/site";
 import {SiteBackend} from "../../services/sitebackend";
+import frameModule = require("ui/frame");
 
 export class SiteListViewModel extends Observable {
     
-    private _sites:ObservableArray<Sites.Site>;
+    private _sites:ObservableArray<Site>;
     
-    public get Sites():ObservableArray<Sites.Site>{
+    public get Sites():ObservableArray<Site>{
         return this._sites;
     }
     
@@ -18,7 +19,13 @@ export class SiteListViewModel extends Observable {
     }
     
     public OnSelectSite(EventData){
-        console.log(EventData);    
+        console.log(EventData.index);
+        var site = this._sites.getItem(EventData.index);
+        console.log(site);
+        frameModule.topmost().navigate({
+            moduleName: "pages/siteform/siteform-page",
+            context: site
+        });    
     }
       
 }

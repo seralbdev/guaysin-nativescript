@@ -1,0 +1,15 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo">
+  <StackLayout>
+    <TextField text="{{site.Name}}"/>
+    <Label text="Url"></Label>
+    <TextField text="{{site.Url}}"/>
+    <Label text="User"></Label>
+    <TextField text="{{site.User}}"/>
+    <Label text="Password"></Label>
+    <StackLayout orientation="horizontal">
+        <TextField text="{{site.Password}}" secure="{{ site.pwdsecure }}"/>
+        <Button text="*" tap="{{ ChangePwdSecurity }}"/>
+    </StackLayout>           
+    <Button text="Save" tap="{{ SaveChanges }}"/>  
+  </StackLayout>
+</Page>
