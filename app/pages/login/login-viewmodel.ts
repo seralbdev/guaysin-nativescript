@@ -3,6 +3,7 @@ import appSettings = require("application-settings");
 import dialogs = require("ui/dialogs");
 import frameModule = require("ui/frame");
 import {CryptoServices} from "../../services/cryptoservice";
+import {SiteBackend} from "../../services/sitebackend";
 
 export class LoginViewModel extends observable.Observable {
     
@@ -38,6 +39,8 @@ export class LoginViewModel extends observable.Observable {
             //First time.
             //Generate random secret, encrypt with pwd and save as app-setting
             CryptoServices.CreateSecret(this.password);
+            //Init DB
+            SiteBackend.Initialize();
             frameModule.topmost().navigate("pages/sitelist/sitelist-page");            
         }
     }
