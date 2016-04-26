@@ -1,6 +1,6 @@
 import {Site} from "./site";
-//var ObservableArray = require("data/observable-array").ObservableArray<T>;
 import {ObservableArray} from "data/observable-array";
+import {CryptoServices} from "./cryptoservice";
 var Sqlite = require("nativescript-sqlite");
 
 export module SiteBackend{
@@ -36,7 +36,12 @@ export module SiteBackend{
             db.all("SELECT * FROM Site;").then(rows => {
                 for(let row in rows) {
                     let r=rows[row];
-                    let site = new Site(r[3],r[4],r[5],r[6],r[0]);
+                    //let site = new Site(r[3],r[4],r[5],r[6],r[0]);
+                    let site = new Site(CryptoServices.Decode(r[3]),
+                                        CryptoServices.Decode(r[4]),
+                                        CryptoServices.Decode(r[5]),
+                                        CryptoServices.Decode(r[6]),
+                                        r[0]);                   
                     data.push(site);                     
                 }
             db.close();
@@ -59,8 +64,15 @@ export module SiteBackend{
             sentence = `UPDATE Site SET LastChange=?,InSync=?,Name=?,Url=?,User=?,Password=? WHERE Id=${site.Id};`;     
         }
         
+        let params = [  1,2,  
+                        CryptoServices.Encode(site.Name),
+                        CryptoServices.Encode(site.Url),
+                        CryptoServices.Encode(site.User),
+                        CryptoServices.Encode(site.Password)
+                     ];
+        
         (new Sqlite("guaysin.db")).then(db => {
-                db.execSQL(sentence, [1,2,site.Name,site.Url,site.User,site.Password]).then(id => {
+                db.execSQL(sentence, params).then(id => {
                             console.log("INSERT RESULT", id);
                         }, error => {
                             console.log("INSERT ERROR", error);

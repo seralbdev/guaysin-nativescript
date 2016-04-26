@@ -7,10 +7,11 @@ export module CryptoServices{
         export function UnblockSecret(Password:string):boolean {
             var encryptedsecret = appSettings.getString("SECRET");
             var secrethex = CryptoJS.AES.decrypt(encryptedsecret, Password);
-            var secret = secrethex.toString(CryptoJS.enc.Utf8);
-            if(!secret){                   
+            var sec = secrethex.toString(CryptoJS.enc.Utf8);
+            if(!sec){                   
                 return false;
             }
+            secret = sec;
             return true;   
         }
         
@@ -31,7 +32,7 @@ export module CryptoServices{
         export function Decode(Payload:string):string{
             if(!secret)
                 throw new Error("Secret not ublocked");
-            return CryptoJS.AES.decrypt(Payload,secret);             
+            return CryptoJS.AES.decrypt(Payload,secret).toString(CryptoJS.enc.Utf8);             
         }     
 }
 
