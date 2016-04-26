@@ -1,8 +1,8 @@
    
 export class Site{       
-    public constructor(public Name:string,public Url:string,public User:string,public Password:string,public Tags:string[]=[]){  
+    public constructor(public Name:string,public Url:string,public User:string,public Password:string,public Id?:number,public Tags:string[]=[]){  
     }
-    
+       
     public Serialize():string{
         return JSON.stringify(this);    
     }

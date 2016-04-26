@@ -1,15 +1,22 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo">
-  <StackLayout>
-    <TextField text="{{site.Name}}"/>
-    <Label text="Url"></Label>
-    <TextField text="{{site.Url}}"/>
-    <Label text="User"></Label>
-    <TextField text="{{site.User}}"/>
-    <Label text="Password"></Label>
-    <StackLayout orientation="horizontal">
-        <TextField text="{{site.Password}}" secure="{{ site.pwdsecure }}"/>
-        <Button text="*" tap="{{ ChangePwdSecurity }}"/>
-    </StackLayout>           
-    <Button text="Save" tap="{{ SaveChanges }}"/>  
-  </StackLayout>
+    <DockLayout>
+        <DockLayout dock="bottom">
+            <Button text="&#xf1f8;" tap="{{ DeleteSite }}" dock="left" horizontalAlignment="left" class="font-awesome"/> 
+            <Button text="&#xf0c7;" tap="{{ SaveChanges }}" dock="right" horizontalAlignment="right" class="font-awesome"/>
+        </DockLayout>
+
+        <StackLayout>
+            <TextField text="{{site.Name}}"/>
+            <Label text="Url"></Label>
+            <TextField text="{{site.Url}}"/>
+            <Label text="User"></Label>
+            <TextField text="{{site.User}}"/>
+            <Label text="Password"></Label>
+            <StackLayout orientation="horizontal">
+                <TextField text="{{site.Password}}" secure="{{ site.pwdsecure }}"/>
+                <Button text="*" tap="{{ ChangePwdSecurity }}"/>
+            </StackLayout>            
+        </StackLayout>
+    </DockLayout>
+
 </Page>

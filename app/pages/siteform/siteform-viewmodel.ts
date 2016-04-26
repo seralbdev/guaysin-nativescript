@@ -19,6 +19,16 @@ export class SiteFormViewModel extends Observable {
         frameModule.topmost().goBack();    
     }
     
+    public DeleteSite(){
+        dialogs.confirm("Cofirm deletion").then(result => {
+            if(result){
+                SiteBackend.DeleteSite(this.site);
+                frameModule.topmost().goBack();              
+            }
+        });        
+   
+    }    
+    
     public ChangePwdSecurity(){
         this.pwdsecure = !this.pwdsecure;
         this.notifyPropertyChange("pwdsecure",this.pwdsecure);

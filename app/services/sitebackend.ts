@@ -4,12 +4,7 @@ import {ObservableArray} from "data/observable-array";
 var Sqlite = require("nativescript-sqlite");
 
 export module SiteBackend{
-    
-    var data:Site[]=[new Site("Site1","www.site1.com","User1","Pwd1"),
-                    new Site("Site2","www.site2.com","User2","Pwd2")];
-                    
-    var appDb;
-                    
+                  
     export function Initialize(){
         var sentence = `CREATE TABLE Site (
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,8 +18,8 @@ export module SiteBackend{
                         
         (new Sqlite("guaysin.db")).then(db => {
                 db.execSQL(sentence).then(id => {
-                    appDb = db;
                     console.log("db created!");
+                    db.close();
                 },error => {
                     throw new Error("Error intializing DB: ${error}");
                 });
@@ -33,15 +28,36 @@ export module SiteBackend{
             });                            
     }
        
-    export function LoadSites(filter:string):ObservableArray<Site>{      
-        var source = new ObservableArray(data);
-        return source;
+    export function LoadSites(filter:string):ObservableArray<Site>{
+
+        let sentence = "SELECT * FROM Site";
+        let data = new ObservableArray<Site>();
+        (new Sqlite("guaysin.db")).then(db => {
+            db.all("SELECT * FROM Site;").then(rows => {
+                for(let row in rows) {
+                    let r=rows[row];
+                    let site = new Site(r[3],r[4],r[5],r[6],r[0]);
+                    data.push(site);                     
+                }
+            db.close();
+            },error => {
+                console.log("SELECT ERROR", error);
+                throw new Error(error.message);
+            })
+        });
+        
+        return data;
     }
     
     export function SaveSite(site:Site){
-        data.push(site);
+              
+        let sentence:string;
         
-        var sentence = "INSERT INTO Site (LastChange, InSync, Name, Url, User, Password) VALUES (?,?,?,?,?,?)";
+        if(site.Id==undefined){
+            sentence = "INSERT INTO Site (LastChange, InSync, Name, Url, User, Password) VALUES (?,?,?,?,?,?);";    
+        }else{
+            sentence = `UPDATE Site SET LastChange=?,InSync=?,Name=?,Url=?,User=?,Password=? WHERE Id=${site.Id};`;     
+        }
         
         (new Sqlite("guaysin.db")).then(db => {
                 db.execSQL(sentence, [1,2,site.Name,site.Url,site.User,site.Password]).then(id => {
@@ -54,5 +70,22 @@ export module SiteBackend{
             },error => {
                 throw new Error("Error opening DB: ${error}");
             }); 
-    } 
+    }
+    
+    export function DeleteSite(site:Site){
+        if(site.Id!=undefined){
+            let sentence = `DELETE FROM Site WHERE Id=${site.Id};`;
+            (new Sqlite("guaysin.db")).then(db => {
+                    db.execSQL(sentence).then(id => {
+                                console.log("DELETE RESULT", id);
+                            }, error => {
+                                console.log("DELETE ERROR", error);
+                            });                
+                
+            db.close();
+            },error => {
+                throw new Error("Error opening DB: ${error}");
+            });             
+        }      
+    }   
 }

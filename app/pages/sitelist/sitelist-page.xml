@@ -1,12 +1,13 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo">
-  <StackLayout>
-        <ListView items="{{ Sites }}" itemTap="{{ OnSelectSite }}">
+  <DockLayout>
+        <Button text="&#xf055;" tap="{{ OnAddSite }}" class="font-awesome" dock="bottom" />
+        <ListView items="{{ Sites }}" itemTap="{{ OnSelectSite }} ">
             <ListView.itemTemplate>
                 <StackLayout>
                     <Label text="{{ Name }}"/>
                     <Label text="{{ Url }}"/>                
                 </StackLayout>
             </ListView.itemTemplate>
-        </ListView>
-  </StackLayout>
+        </ListView>        
+  </DockLayout>
 </Page>

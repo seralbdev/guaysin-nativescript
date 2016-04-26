@@ -3,3 +3,12 @@
     horizontal-align: center;
     margin: 20;
 }
+
+.font-awesome {
+    font-family: "FontAwesome", fontawesome-webfont;
+    font-size: 30;
+}
+
+.material-icon {
+   font-family: 'Material-Design-Iconic-Font';
+}

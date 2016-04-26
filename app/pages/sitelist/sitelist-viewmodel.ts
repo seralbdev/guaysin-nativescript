@@ -27,5 +27,15 @@ export class SiteListViewModel extends Observable {
             context: site
         });    
     }
+    
+    public OnAddSite(EventData){
+        console.log(EventData.index);
+        let site = new Site("","","","");
+        console.log(site);
+        frameModule.topmost().navigate({
+            moduleName: "pages/siteform/siteform-page",
+            context: site
+        });    
+    }    
       
 }
