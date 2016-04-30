@@ -12,3 +12,7 @@
 .material-icon {
    font-family: 'Material-Design-Iconic-Font';
 }
+
+ActionBar {
+    background-color: #CDDC39;
+}
