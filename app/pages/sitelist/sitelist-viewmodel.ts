@@ -8,17 +8,18 @@ import frameModule = require("ui/frame");
 export class SiteListViewModel extends Observable {
     
     private _sites:ObservableArray<Site>;
+    public filter:string;
     
     public get Sites():ObservableArray<Site>{
         return this._sites;
     }
     
-    public LoadSites():void{
-        var data = SiteBackend.LoadSites("");
+    public LoadSites(query:string=""):void{
+        var data = SiteBackend.LoadSites(query);
         this._sites = data;
     }
     
-    public OnSelectSite(EventData){
+    public SelectSite(EventData){
         console.log(EventData.index);
         var site = this._sites.getItem(EventData.index);
         console.log(site);
@@ -28,7 +29,7 @@ export class SiteListViewModel extends Observable {
         });    
     }
     
-    public OnAddSite(EventData){
+    public AddSite(EventData){
         console.log(EventData.index);
         let site = new Site("","","","");
         console.log(site);
@@ -36,6 +37,12 @@ export class SiteListViewModel extends Observable {
             moduleName: "pages/siteform/siteform-page",
             context: site
         });    
+    }
+    
+    public Search(EventData){
+        console.log("search");
+        this.LoadSites(this.filter);
+        this.notifyPropertyChange("Sites",this._sites);        
     }    
       
 }

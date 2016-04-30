@@ -32,8 +32,12 @@ export module SiteBackend{
 
         let sentence = "SELECT * FROM Site";
         let data = new ObservableArray<Site>();
+        let regexp:RegExp;
+        if(filter)
+            regexp = new RegExp(`.*${filter}.*`);
+            
         (new Sqlite("guaysin.db")).then(db => {
-            db.all("SELECT * FROM Site;").then(rows => {
+            db.all(sentence).then(rows => {
                 for(let row in rows) {
                     let r=rows[row];
                     //let site = new Site(r[3],r[4],r[5],r[6],r[0]);
@@ -41,8 +45,14 @@ export module SiteBackend{
                                         CryptoServices.Decode(r[4]),
                                         CryptoServices.Decode(r[5]),
                                         CryptoServices.Decode(r[6]),
-                                        r[0]);                   
-                    data.push(site);                     
+                                        r[0]);
+                    if(regexp){
+                        if(regexp.test(site.Name))                                       
+                            data.push(site);
+                    }else{
+                        data.push(site);    
+                    }
+                                         
                 }
             db.close();
             },error => {
