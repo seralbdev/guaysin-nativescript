@@ -10,4 +10,5 @@ export function navigatingTo(args: EventData) {
     console.log(site);    
     var vm = new SiteFormViewModel(site);
     page.bindingContext = vm;
+    vm.UpdateUi();
 }

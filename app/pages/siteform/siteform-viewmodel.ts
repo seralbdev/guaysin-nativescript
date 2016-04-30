@@ -27,10 +27,14 @@ export class SiteFormViewModel extends Observable {
             }
         });        
    
+    }
+    
+    public UpdateUi(){
+        this.notifyPropertyChange("pwdsecure",this.pwdsecure);    
     }    
     
     public ChangePwdSecurity(){
         this.pwdsecure = !this.pwdsecure;
-        this.notifyPropertyChange("pwdsecure",this.pwdsecure);
+        this.UpdateUi();
     }       
 }
