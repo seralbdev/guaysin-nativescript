@@ -7,7 +7,7 @@
         </DockLayout>
         <ListView items="{{ Sites }}" itemTap="{{ SelectSite }} ">
             <ListView.itemTemplate>
-                <StackLayout>
+                <StackLayout style="margin:5;padding:5;">
                     <Label text="{{ Name }}"/>
                     <Label text="{{ Url }}"/>                
                 </StackLayout>
