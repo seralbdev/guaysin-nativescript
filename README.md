@@ -1,5 +1,6 @@
 # guaysin
 Password manager developped in Nativescript
+
 Stores sites, user and password information in an AES encrypted SQLite database on the phone
 I have tested it on Android 6.0 only
 
