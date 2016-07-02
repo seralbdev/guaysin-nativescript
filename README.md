@@ -10,3 +10,7 @@ clone repo
 npm install
 tns plaform add android
 tns deploy android
+
+![alt tag](https://github.com/seralb/guaysin/blob/master/guaysin1.png)
+
+![alt tag](https://github.com/seralb/guaysin/blob/master/guaysin2.png)
