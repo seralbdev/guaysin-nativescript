@@ -30,10 +30,12 @@ export class SiteFormViewModel extends Observable {
     }
     
     public UpdateUi(){
+        console.log(this.pwdsecure);
         this.notifyPropertyChange("pwdsecure",this.pwdsecure);    
     }    
     
     public ChangePwdSecurity(){
+        console.log("change secure");
         this.pwdsecure = !this.pwdsecure;
         this.UpdateUi();
     }       

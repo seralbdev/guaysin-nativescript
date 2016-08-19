@@ -1,5 +1,6 @@
 import {Site} from "./site";
 import {ObservableArray} from "data/observable-array";
+import {File,Folder,path} from "file-system";
 import {CryptoServices} from "./cryptoservice";
 var Sqlite = require("nativescript-sqlite");
 
@@ -109,5 +110,56 @@ export module SiteBackend{
                 throw new Error("Error opening DB: ${error}");
             });             
         }      
+    }
+
+    export function ExportToFile():Promise<any>{
+        let sentence = "SELECT * FROM Site";
+
+        return new Promise<any>((resolve,reject) =>{
+            //get all sites and create array
+            (new Sqlite("guaysin.db")).then(db => {
+                db.all(sentence).then(rows => {
+                    let data: Site[] = [];
+                    console.log("enumerating records..");
+                    for(let row in rows) {
+                        console.log("new record..");
+                        let r=rows[row];
+                        let site = new Site(CryptoServices.Decode(r[3]),
+                                            CryptoServices.Decode(r[4]),
+                                            CryptoServices.Decode(r[5]),
+                                            CryptoServices.Decode(r[6]),
+                                            r[0]);
+                        console.log(`site: ${site.Name}`);                                            
+                        data.push(site);
+                        console.log("push done");
+                    }
+
+                    console.log("closing db..");
+                    db.close();
+
+                    console.log("preparing file..");
+                    //prepare target file
+                    //let downloadsFolderPath = path.join(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).toString());
+                    let downloadsFolderPath = path.join(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).getAbsolutePath().toString());
+                    console.log(downloadsFolderPath);
+                    let downloadsFolder = Folder.fromPath(downloadsFolderPath);
+                    console.log(downloadsFolder.name);
+                    let file = downloadsFolder.getFile("guaysindata.json");
+
+                    console.log("saving file..");
+                    //save and return
+                    file.writeText(JSON.stringify(data)).then(() =>{
+                        console.log("done file!");
+                        resolve();
+                    },error =>{
+                        console.log(`FS ERROR ${error}`);
+                        reject();
+                    })                      
+                },error => {
+                    console.log(`SELECT ERROR ${error}`);
+                    reject();
+                })
+            });                       
+        });        
     }   
 }

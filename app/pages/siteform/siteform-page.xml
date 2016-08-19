@@ -10,11 +10,11 @@
             <Label text="Name"></Label>
             <TextField text="{{site.Name}}"/>
             <Label text="Url"></Label>
-            <TextField text="{{site.Url}}" secure="{{ site.pwdsecure }}"/>
+            <TextField text="{{site.Url}}" secure="{{ pwdsecure }}"/>
             <Label text="User"></Label>
-            <TextField text="{{site.User}}" secure="{{ site.pwdsecure }}"/>
+            <TextField text="{{site.User}}" secure="{{ pwdsecure }}"/>
             <Label text="Password"></Label>
-            <TextField text="{{site.Password}}" secure="{{ site.pwdsecure }}"/>
+            <TextField text="{{site.Password}}" secure="{{ pwdsecure }}"/>
         </StackLayout>
     </DockLayout>
 

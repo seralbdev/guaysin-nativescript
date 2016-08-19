@@ -30,13 +30,22 @@ export class SiteListViewModel extends Observable {
     }
     
     public AddSite(EventData){
-        console.log(EventData.index);
+        console.log("AddSite");
         let site = new Site("","","","");
         console.log(site);
         frameModule.topmost().navigate({
             moduleName: "pages/siteform/siteform-page",
             context: site
         });    
+    }
+
+    public ExportToFile(EventData){
+        console.log("export");
+        SiteBackend.ExportToFile().then(() => {
+            console.log("saved!");
+        },error =>{
+            console.log("ERROR!: ",error);
+        });
     }
     
     public Search(EventData){

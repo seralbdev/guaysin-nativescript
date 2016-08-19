@@ -24,9 +24,11 @@ var SiteFormViewModel = (function (_super) {
         });
     };
     SiteFormViewModel.prototype.UpdateUi = function () {
+        console.log(this.pwdsecure);
         this.notifyPropertyChange("pwdsecure", this.pwdsecure);
     };
     SiteFormViewModel.prototype.ChangePwdSecurity = function () {
+        console.log("change secure");
         this.pwdsecure = !this.pwdsecure;
         this.UpdateUi();
     };

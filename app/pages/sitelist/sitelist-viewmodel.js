@@ -30,12 +30,20 @@ var SiteListViewModel = (function (_super) {
         });
     };
     SiteListViewModel.prototype.AddSite = function (EventData) {
-        console.log(EventData.index);
+        console.log("AddSite");
         var site = new site_1.Site("", "", "", "");
         console.log(site);
         frameModule.topmost().navigate({
             moduleName: "pages/siteform/siteform-page",
             context: site
+        });
+    };
+    SiteListViewModel.prototype.ExportToFile = function (EventData) {
+        console.log("export");
+        sitebackend_1.SiteBackend.ExportToFile().then(function () {
+            console.log("saved!");
+        }, function (error) {
+            console.log("ERROR!: ", error);
         });
     };
     SiteListViewModel.prototype.Search = function (EventData) {
