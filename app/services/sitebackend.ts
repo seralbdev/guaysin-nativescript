@@ -6,31 +6,33 @@ var Sqlite = require("nativescript-sqlite");
 
 export module SiteBackend{
                   
-    export function Initialize(){
-        var sentence = `CREATE TABLE Site (
-                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        LastChange NUMERIC NOT NULL,
-                        InSync NUMERIC NOT NULL,
-                        Name TEXT NOT NULL,
-                        Url	TEXT NOT NULL,
-                        User TEXT,
-                        Password TEXT,
-                        Tags TEXT);`;
-                        
-        (new Sqlite("guaysin.db")).then(db => {
-                db.execSQL(sentence).then(id => {
-                    console.log("db created!");
-                    db.close();
-                },error => {
-                    throw new Error("Error intializing DB: ${error}");
-                });
-            }, error => {
-                throw new Error("Error creating DB: ${error}");
-            });                            
+    export function Initialize():Promise<any>{
+        return new Promise<any>((resolve,reject) =>{
+            var sentence = `CREATE TABLE Site (
+                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            LastChange NUMERIC NOT NULL,
+                            InSync NUMERIC NOT NULL,
+                            Name TEXT NOT NULL,
+                            Url	TEXT NOT NULL,
+                            User TEXT,
+                            Password TEXT,
+                            Tags TEXT);`;
+                            
+            (new Sqlite("guaysin.db")).then(db => {
+                    db.execSQL(sentence).then(id => {
+                        //console.log("db created!");
+                        db.close();
+                        resolve();
+                    },error => {
+                        throw new Error("Error intializing DB: ${error}");
+                    });
+                }, error => {
+                    throw new Error("Error creating DB: ${error}");
+                });     
+        });                       
     }
        
     export function LoadSites(filter:string):ObservableArray<Site>{
-
         let sentence = "SELECT * FROM Site";
         let data = new ObservableArray<Site>();
         let regexp:RegExp;
@@ -52,12 +54,11 @@ export module SiteBackend{
                             data.push(site);
                     }else{
                         data.push(site);    
-                    }
-                                         
+                    }                                         
                 }
-            db.close();
+                db.close();
             },error => {
-                console.log("SELECT ERROR", error);
+                //console.log("SELECT ERROR", error);
                 throw new Error(error.message);
             })
         });
@@ -65,51 +66,71 @@ export module SiteBackend{
         return data;
     }
     
-    export function SaveSite(site:Site){
-              
-        let sentence:string;
-        
-        if(site.Id==undefined){
-            sentence = "INSERT INTO Site (LastChange, InSync, Name, Url, User, Password) VALUES (?,?,?,?,?,?);";    
-        }else{
-            sentence = `UPDATE Site SET LastChange=?,InSync=?,Name=?,Url=?,User=?,Password=? WHERE Id=${site.Id};`;     
-        }
-        
-        let params = [  1,2,  
-                        CryptoServices.Encode(site.Name),
-                        CryptoServices.Encode(site.Url),
-                        CryptoServices.Encode(site.User),
-                        CryptoServices.Encode(site.Password)
-                     ];
-        
-        (new Sqlite("guaysin.db")).then(db => {
-                db.execSQL(sentence, params).then(id => {
-                            console.log("INSERT RESULT", id);
-                        }, error => {
-                            console.log("INSERT ERROR", error);
-                        });                
+    export function SaveSite(site:Site):Promise<any>{
+        return new Promise<any>((resolve,reject)=>{
+            let sentence:string;
             
-                db.close();
-            },error => {
-                throw new Error("Error opening DB: ${error}");
+            if(site.Id==undefined){
+                sentence = "INSERT INTO Site (LastChange, InSync, Name, Url, User, Password) VALUES (?,?,?,?,?,?);";    
+            }else{
+                sentence = `UPDATE Site SET LastChange=?,InSync=?,Name=?,Url=?,User=?,Password=? WHERE Id=${site.Id};`;     
+            }
+            
+            let params = [  1,2,  
+                            CryptoServices.Encode(site.Name),
+                            CryptoServices.Encode(site.Url),
+                            CryptoServices.Encode(site.User),
+                            CryptoServices.Encode(site.Password)
+                        ];
+            
+            (new Sqlite("guaysin.db")).then(db => {
+                    db.execSQL(sentence, params).then(id => {
+                        db.close();
+                        resolve();
+                    }, error => {
+                        //console.log("INSERT ERROR", error);
+                        throw new Error("INSERT ERROR: "+error);
+                    });                
+                },error => {
+                    throw new Error("Error opening DB: ${error}");
             }); 
+        });
     }
     
-    export function DeleteSite(site:Site){
-        if(site.Id!=undefined){
-            let sentence = `DELETE FROM Site WHERE Id=${site.Id};`;
-            (new Sqlite("guaysin.db")).then(db => {
+    export function DeleteSite(site:Site):Promise<any>{
+        return new Promise<any>((resolve,reject)=>{
+            if(site.Id!=undefined){
+                let sentence = `DELETE FROM Site WHERE Id=${site.Id};`;
+                (new Sqlite("guaysin.db")).then(db => {
                     db.execSQL(sentence).then(id => {
-                                console.log("DELETE RESULT", id);
-                            }, error => {
-                                console.log("DELETE ERROR", error);
-                            });                
-                
-            db.close();
+                        db.close();
+                        resolve();
+                    }, error => {
+                        //console.log("DELETE ERROR", error);
+                        throw new Error("INSERT ERROR: "+error);
+                    });                                    
+                },error => {
+                    throw new Error("Error opening DB: ${error}");
+                });             
+            } 
+        });
+    }
+
+    function CleanSites():Promise<any>{
+        return new Promise<any>((resolve,reject)=>{
+            let sentence = `DELETE FROM Site;`;
+            (new Sqlite("guaysin.db")).then(db => {
+                db.execSQL(sentence).then(id => {
+                    db.close();
+                    resolve();
+                }, error => {
+                    //console.log("DELETE ERROR", error);
+                    throw new Error("INSERT ERROR: "+error);
+                });                
             },error => {
                 throw new Error("Error opening DB: ${error}");
-            });             
-        }      
+            });              
+        });
     }
 
     export function ExportToFile():Promise<any>{
@@ -137,6 +158,9 @@ export module SiteBackend{
                     console.log("closing db..");
                     db.close();
 
+                    //let secret:string = CryptoServices.GetEncryptedSecret();
+                    //let payload = {'secret':secret,'sites':data};
+
                     console.log("preparing file..");
                     //prepare target file
                     //let downloadsFolderPath = path.join(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).toString());
@@ -161,5 +185,28 @@ export module SiteBackend{
                 })
             });                       
         });        
-    }   
+    }
+
+    export function ImportFromFile():Promise<any>{
+        return new Promise<any>((resolve,reject)=>{
+            let downloadsFolderPath = path.join(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).getAbsolutePath().toString());
+            let downloadsFolder = Folder.fromPath(downloadsFolderPath);
+            let file = downloadsFolder.getFile("guaysindata.json");
+            //1.Read JSON file
+            file.readText().then((jsondata)=>{
+                //let data = JSON.parse(jsondata);
+                //let secret:string = data.secret;
+                let sites:Site[] = JSON.parse(jsondata);
+                //2.Clean DB
+                CleanSites().then(()=>{
+                    //3.Insert sites
+                    sites.forEach((site)=>{
+                        site.Id = undefined;
+                        SaveSite(site);    
+                    });
+                    resolve();
+                });
+            });
+        });
+    }       
 }

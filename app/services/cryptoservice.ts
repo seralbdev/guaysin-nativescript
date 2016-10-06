@@ -4,8 +4,16 @@ var CryptoJS = require("crypto-js");
 export module CryptoServices{
         var secret:string;
         
+        export function GetEncryptedSecret():string{
+            return appSettings.getString("SECRET");   
+        }
+
+        export function SetEncryptedSecret(ciphertext:string){
+            appSettings.setString("SECRET",ciphertext);    
+        }
+
         export function UnblockSecret(Password:string):boolean {
-            var encryptedsecret = appSettings.getString("SECRET");
+            var encryptedsecret = GetEncryptedSecret();
             var secrethex = CryptoJS.AES.decrypt(encryptedsecret, Password);
             var sec = secrethex.toString(CryptoJS.enc.Utf8);
             if(!sec){                   

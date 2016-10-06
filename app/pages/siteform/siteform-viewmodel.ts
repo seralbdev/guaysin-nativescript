@@ -15,15 +15,17 @@ export class SiteFormViewModel extends Observable {
     }
     
     public SaveChanges(){
-        SiteBackend.SaveSite(this.site);
-        frameModule.topmost().goBack();    
+        SiteBackend.SaveSite(this.site).then(()=>{
+            frameModule.topmost().goBack();
+        });
     }
     
     public DeleteSite(){
         dialogs.confirm("Cofirm deletion").then(result => {
             if(result){
-                SiteBackend.DeleteSite(this.site);
-                frameModule.topmost().goBack();              
+                SiteBackend.DeleteSite(this.site).then(()=>{
+                    frameModule.topmost().goBack(); 
+                });             
             }
         });        
    
@@ -38,5 +40,5 @@ export class SiteFormViewModel extends Observable {
         console.log("change secure");
         this.pwdsecure = !this.pwdsecure;
         this.UpdateUi();
-    }       
+    }          
 }

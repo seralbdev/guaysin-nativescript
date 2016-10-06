@@ -53,5 +53,10 @@ export class SiteListViewModel extends Observable {
         this.LoadSites(this.filter);
         this.notifyPropertyChange("Sites",this._sites);        
     }    
-      
+
+    public onImport(){
+        SiteBackend.ImportFromFile().then(()=>{
+            dialogs.confirm("Import finished OK");    
+        });
+    }       
 }

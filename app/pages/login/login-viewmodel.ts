@@ -40,8 +40,9 @@ export class LoginViewModel extends observable.Observable {
             //Generate random secret, encrypt with pwd and save as app-setting
             CryptoServices.CreateSecret(this.password);
             //Init DB
-            SiteBackend.Initialize();
-            frameModule.topmost().navigate("pages/sitelist/sitelist-page");            
+            SiteBackend.Initialize().then(()=>{
+                frameModule.topmost().navigate("pages/sitelist/sitelist-page");
+            });
         }
     }
 }
