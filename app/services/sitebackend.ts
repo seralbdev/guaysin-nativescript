@@ -20,14 +20,13 @@ export module SiteBackend{
                             
             (new Sqlite("guaysin.db")).then(db => {
                     db.execSQL(sentence).then(id => {
-                        //console.log("db created!");
                         db.close();
                         resolve();
                     },error => {
-                        throw new Error("Error intializing DB: ${error}");
+                        reject(error);
                     });
                 }, error => {
-                    throw new Error("Error creating DB: ${error}");
+                    reject(error);
                 });     
         });                       
     }
@@ -58,7 +57,6 @@ export module SiteBackend{
                 }
                 db.close();
             },error => {
-                //console.log("SELECT ERROR", error);
                 throw new Error(error.message);
             })
         });
@@ -88,11 +86,10 @@ export module SiteBackend{
                         db.close();
                         resolve();
                     }, error => {
-                        //console.log("INSERT ERROR", error);
-                        throw new Error("INSERT ERROR: "+error);
+                        reject(error);
                     });                
                 },error => {
-                    throw new Error("Error opening DB: ${error}");
+                    reject(error);
             }); 
         });
     }
@@ -106,11 +103,10 @@ export module SiteBackend{
                         db.close();
                         resolve();
                     }, error => {
-                        //console.log("DELETE ERROR", error);
-                        throw new Error("INSERT ERROR: "+error);
+                        reject(error);
                     });                                    
                 },error => {
-                    throw new Error("Error opening DB: ${error}");
+                    reject(error);
                 });             
             } 
         });
@@ -124,13 +120,19 @@ export module SiteBackend{
                     db.close();
                     resolve();
                 }, error => {
-                    //console.log("DELETE ERROR", error);
-                    throw new Error("INSERT ERROR: "+error);
+                    reject(error);
                 });                
             },error => {
-                throw new Error("Error opening DB: ${error}");
+                reject(error);
             });              
         });
+    }
+
+    function GetBackupFile():File{
+        let downloadsFolderPath = path.join(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).getAbsolutePath().toString());
+        let downloadsFolder = Folder.fromPath(downloadsFolderPath);
+        let file = downloadsFolder.getFile("guaysindata.json");
+        return file;        
     }
 
     export function ExportToFile():Promise<any>{
@@ -141,47 +143,32 @@ export module SiteBackend{
             (new Sqlite("guaysin.db")).then(db => {
                 db.all(sentence).then(rows => {
                     let data: Site[] = [];
-                    console.log("enumerating records..");
                     for(let row in rows) {
-                        console.log("new record..");
                         let r=rows[row];
                         let site = new Site(CryptoServices.Decode(r[3]),
                                             CryptoServices.Decode(r[4]),
                                             CryptoServices.Decode(r[5]),
                                             CryptoServices.Decode(r[6]),
-                                            r[0]);
-                        console.log(`site: ${site.Name}`);                                            
+                                            r[0]);                                           
                         data.push(site);
-                        console.log("push done");
                     }
 
-                    console.log("closing db..");
                     db.close();
 
                     //let secret:string = CryptoServices.GetEncryptedSecret();
                     //let payload = {'secret':secret,'sites':data};
 
-                    console.log("preparing file..");
                     //prepare target file
-                    //let downloadsFolderPath = path.join(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).toString());
-                    let downloadsFolderPath = path.join(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).getAbsolutePath().toString());
-                    console.log(downloadsFolderPath);
-                    let downloadsFolder = Folder.fromPath(downloadsFolderPath);
-                    console.log(downloadsFolder.name);
-                    let file = downloadsFolder.getFile("guaysindata.json");
+                    let file = GetBackupFile();
 
-                    console.log("saving file..");
                     //save and return
                     file.writeText(JSON.stringify(data)).then(() =>{
-                        console.log("done file!");
                         resolve();
                     },error =>{
-                        console.log(`FS ERROR ${error}`);
-                        reject();
+                        reject(error);
                     })                      
                 },error => {
-                    console.log(`SELECT ERROR ${error}`);
-                    reject();
+                    reject(error);
                 })
             });                       
         });        
@@ -189,9 +176,7 @@ export module SiteBackend{
 
     export function ImportFromFile():Promise<any>{
         return new Promise<any>((resolve,reject)=>{
-            let downloadsFolderPath = path.join(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).getAbsolutePath().toString());
-            let downloadsFolder = Folder.fromPath(downloadsFolderPath);
-            let file = downloadsFolder.getFile("guaysindata.json");
+            let file = GetBackupFile();
             //1.Read JSON file
             file.readText().then((jsondata)=>{
                 //let data = JSON.parse(jsondata);

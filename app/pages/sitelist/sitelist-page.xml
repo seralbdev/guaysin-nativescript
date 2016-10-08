@@ -1,19 +1,23 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo">
-  <DockLayout>
-        <Button text="&#xf055;" tap="{{ AddSite }}" class="font-awesome" dock="bottom" />
-        <Button text="&#xf0a0;" tap="{{ ExportToFile }}" class="font-awesome" dock="bottom" />
-        <Button text="Import" tap="{{ onImport }}"/>
-        <DockLayout dock="top">
-            <Button text="&#xf002;" tap="{{ Search }}" class="font-awesome" style="font-size:20;margin: 5;" dock="left"/>
-            <TextField text="{{ filter }}" />
-        </DockLayout>
-        <ListView items="{{ Sites }}" itemTap="{{ SelectSite }} ">
-            <ListView.itemTemplate>
-                <StackLayout style="margin:5;padding:5;">
-                    <Label text="{{ Name }}"/>
-                    <Label text="{{ Url }}"/>                
-                </StackLayout>
-            </ListView.itemTemplate>
-        </ListView>        
-  </DockLayout>
+    <Page.ActionBar>
+        <ActionBar>
+            <ActionItem tap="{{ExportBackup}}" text="Export" android.position="popup"/>
+            <ActionItem tap="{{ImportBackup}}" text="Import" android.position="popup"/>
+        </ActionBar>
+    </Page.ActionBar>
+    <DockLayout>
+            <Button text="&#xf055;" tap="{{ AddSite }}" class="font-awesome" dock="bottom" />
+            <DockLayout dock="top">
+                <Button text="&#xf002;" tap="{{ Search }}" class="font-awesome" style="font-size:20;margin: 5;" dock="left"/>
+                <TextField text="{{ filter }}" />
+            </DockLayout>
+            <ListView items="{{ Sites }}" itemTap="{{ SelectSite }} ">
+                <ListView.itemTemplate>
+                    <StackLayout style="margin:5;padding:5;">
+                        <Label text="{{ Name }}"/>
+                        <Label text="{{ Url }}"/>                
+                    </StackLayout>
+                </ListView.itemTemplate>
+            </ListView>        
+    </DockLayout>
 </Page>

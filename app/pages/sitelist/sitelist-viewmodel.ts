@@ -4,6 +4,8 @@ import dialogs = require("ui/dialogs");
 import {Site} from "../../services/site";
 import {SiteBackend} from "../../services/sitebackend";
 import frameModule = require("ui/frame");
+var Toast = require("nativescript-toast");
+
 
 export class SiteListViewModel extends Observable {
     
@@ -38,25 +40,35 @@ export class SiteListViewModel extends Observable {
             context: site
         });    
     }
-
-    public ExportToFile(EventData){
-        console.log("export");
-        SiteBackend.ExportToFile().then(() => {
-            console.log("saved!");
-        },error =>{
-            console.log("ERROR!: ",error);
-        });
-    }
-    
+   
     public Search(EventData){
         console.log("search");
         this.LoadSites(this.filter);
         this.notifyPropertyChange("Sites",this._sites);        
     }    
 
-    public onImport(){
-        SiteBackend.ImportFromFile().then(()=>{
-            dialogs.confirm("Import finished OK");    
+    public ExportBackup(EventData){
+        SiteBackend.ExportToFile().then(() => {
+            let toast = Toast.makeText("Export finished");
+            toast.show();             
+        },error =>{
+            dialogs.alert("Backup failed!");
         });
+    }
+
+    public ImportBackup(EventData){
+        dialogs.confirm("Restore backup?").then(result => {
+            if(result){
+                SiteBackend.ImportFromFile().then(()=>{
+                    let toast = Toast.makeText("Restore finished");
+                    toast.show();
+                    frameModule.topmost().navigate({
+                        moduleName: "pages/login/login-page"
+                    });                         
+                },error=>{
+                    dialogs.alert("Restore failed!");
+                });            
+            }
+        }); 
     }       
 }
