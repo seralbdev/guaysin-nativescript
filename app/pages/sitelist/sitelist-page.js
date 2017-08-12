@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var sitelist_viewmodel_1 = require("./sitelist-viewmodel");
 function navigatingTo(args) {
     var page = args.object;
@@ -7,4 +8,4 @@ function navigatingTo(args) {
     page.bindingContext = vm;
 }
 exports.navigatingTo = navigatingTo;
-//# sourceMappingURL=sitelist-page.js.map
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2l0ZWxpc3QtcGFnZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbInNpdGVsaXN0LXBhZ2UudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFFQSwyREFBd0Q7QUFFeEQsc0JBQTZCLElBQWU7SUFDeEMsSUFBSSxJQUFJLEdBQVMsSUFBSSxDQUFDLE1BQU0sQ0FBQztJQUM3QixJQUFJLEVBQUUsR0FBRyxJQUFJLHNDQUFpQixFQUFFLENBQUM7SUFDakMsRUFBRSxDQUFDLFNBQVMsRUFBRSxDQUFDO0lBQ2YsSUFBSSxDQUFDLGNBQWMsR0FBRyxFQUFFLENBQUM7QUFDN0IsQ0FBQztBQUxELG9DQUtDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgRXZlbnREYXRhIH0gZnJvbSBcImRhdGEvb2JzZXJ2YWJsZVwiO1xuaW1wb3J0IHsgUGFnZSB9IGZyb20gXCJ1aS9wYWdlXCI7XG5pbXBvcnQgeyBTaXRlTGlzdFZpZXdNb2RlbCB9IGZyb20gXCIuL3NpdGVsaXN0LXZpZXdtb2RlbFwiIFxuXG5leHBvcnQgZnVuY3Rpb24gbmF2aWdhdGluZ1RvKGFyZ3M6IEV2ZW50RGF0YSkge1xuICAgIHZhciBwYWdlID0gPFBhZ2U+YXJncy5vYmplY3Q7XG4gICAgdmFyIHZtID0gbmV3IFNpdGVMaXN0Vmlld01vZGVsKCk7XG4gICAgdm0uTG9hZFNpdGVzKCk7XG4gICAgcGFnZS5iaW5kaW5nQ29udGV4dCA9IHZtO1xufSJdfQ==
