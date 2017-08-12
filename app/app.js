@@ -1,5 +1,0 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var application = require("application");
-application.start({ moduleName: "./pages/login/login-page" });
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXBwLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiYXBwLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEseUNBQTRDO0FBQzVDLFdBQVcsQ0FBQyxLQUFLLENBQUMsRUFBRSxVQUFVLEVBQUUsMEJBQTBCLEVBQUUsQ0FBQyxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IGFwcGxpY2F0aW9uID0gcmVxdWlyZShcImFwcGxpY2F0aW9uXCIpO1xuYXBwbGljYXRpb24uc3RhcnQoeyBtb2R1bGVOYW1lOiBcIi4vcGFnZXMvbG9naW4vbG9naW4tcGFnZVwiIH0pO1xuIl19
