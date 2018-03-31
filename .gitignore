@@ -22,3 +22,5 @@ platforms/ios/Sample-TelerikNext/*
 !platforms/ios/Sample-TelerikNext/Sample-TelerikNext-Info.plist
 
 /hooks/
+.cloud/Build.zip
+.cloud/android/guaysinns.apk
