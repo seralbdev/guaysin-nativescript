@@ -6,6 +6,10 @@ var Sqlite = require("nativescript-sqlite");
 var http = require("http");
 
 export module SiteBackend{
+
+    var CLOUD_BACKEND_PUSH_URL:string = "https://guaysinbackend1.azurewebsites.net/api/PushSites?code=8wgbzg4wovpMM9iLNgH96ApcK2YRi8nKwxj6OQag5EoHW6CwUkkVoQ==";
+    var CLOUD_BACKEND_PULL_URL:string = "https://guaysinbackend1.azurewebsites.net/api/GetSites?code=8wgbzg4wovpMM9iLNgH96ApcK2YRi8nKwxj6OQag5EoHW6CwUkkVoQ==";
+    
                   
     export function Initialize():Promise<any>{
         return new Promise<any>((resolve,reject) =>{
@@ -219,13 +223,12 @@ export module SiteBackend{
                     let secret:string = CryptoServices.GetEncryptedSecret();
 
                     http.request({
-                        url: "https://guaysinbackend1.azurewebsites.net/api/PushSites?code=8wgbzg4wovpMM9iLNgH96ApcK2YRi8nKwxj6OQag5EoHW6CwUkkVoQ==",
+                        url:CLOUD_BACKEND_PUSH_URL,
                         method: "POST",
-                        headers: [{"Token":"token1"},{"MasterS":secret},{"Content-Type": "application/json"}],
+                        headers: {'Token':'token1','MasterS':secret,'Content-Type':'application/json'},
                         content: JSON.stringify(data)
                     }).then(function (response) {
-                        var result = response.content.toJSON();
-                        console.log(result);
+                        console.log(response.statusCode);
                         resolve();
                     }, function (e) {
                         console.log("Error occurred " + e);
@@ -237,5 +240,42 @@ export module SiteBackend{
                 })
             });                       
         });        
+    }
+    
+    export function ImportFromCloud():Promise<any>{
+        return new Promise<any>((resolve,reject)=>{
+
+            http.request({
+                url:CLOUD_BACKEND_PULL_URL,
+                method: "GET",
+                headers: {'Token':'token1','Content-Type':'application/json'}
+            }).then(function (response) {
+                
+                //read secret from header in response
+                var secret = response.headers["MasterS"];
+                CryptoServices.SetEncryptedSecret(secret);
+
+                //parse JSON array in response body
+                var cloudsites = JSON.parse(response.content);
+
+                //Clean local DB and insert sites
+                CleanSites().then(()=>{
+                    cloudsites.forEach((cloudsite)=>{
+                        let site = new Site(CryptoServices.Decode(cloudsite.SiteName),
+                        CryptoServices.Decode(cloudsite.SiteUrl),
+                        CryptoServices.Decode(cloudsite.SiteUser),
+                        CryptoServices.Decode(cloudsite.SitePassword),
+                        undefined);
+                        SaveSite(site);                     
+                    });
+    
+                    resolve();                    
+                });
+
+            }, function (e) {
+                console.log("Error occurred " + e);
+                reject(e);
+            });            
+        });
     }    
 }

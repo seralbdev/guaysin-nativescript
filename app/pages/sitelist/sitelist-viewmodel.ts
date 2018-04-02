@@ -74,10 +74,10 @@ export class SiteListViewModel extends Observable {
     
     public ExportToCloud(EventData){
         SiteBackend.ExportToCloud().then(() => {
-            let toast = Toast.makeText("Export finished");
+            let toast = Toast.makeText("Export(cloud) finished");
             toast.show();             
         },error =>{
-            dialogs.alert("Backup failed!");
+            dialogs.alert("Export(cloud) failed!");
         });
     }    
 }
