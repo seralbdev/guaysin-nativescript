@@ -3,6 +3,7 @@ import {ObservableArray} from "data/observable-array";
 import {File,Folder,path} from "file-system";
 import {CryptoServices} from "./cryptoservice";
 var Sqlite = require("nativescript-sqlite");
+var http = require("http");
 
 export module SiteBackend{
                   
@@ -193,5 +194,48 @@ export module SiteBackend{
                 });
             });
         });
-    }       
+    }
+    
+    export function ExportToCloud():Promise<any>{
+        let sentence = "SELECT * FROM Site";
+
+        return new Promise<any>((resolve,reject) =>{
+            //get all sites and create array
+            (new Sqlite("guaysin.db")).then(db => {
+                db.all(sentence).then(rows => {
+                    let data = [];
+                    for(let row in rows) {
+                        let r=rows[row];                                   
+                        data.push({
+                            SiteName:r[3],      //name
+                            SiteUrl:r[4],       //url
+                            SiteUser:r[5],      //user
+                            SitePassword:r[6]   //password                       
+                        });
+                    }
+
+                    db.close();
+
+                    let secret:string = CryptoServices.GetEncryptedSecret();
+
+                    http.request({
+                        url: "https://guaysinbackend1.azurewebsites.net/api/PushSites?code=8wgbzg4wovpMM9iLNgH96ApcK2YRi8nKwxj6OQag5EoHW6CwUkkVoQ==",
+                        method: "POST",
+                        headers: [{"Token":"token1"},{"MasterS":secret},{"Content-Type": "application/json"}],
+                        content: JSON.stringify(data)
+                    }).then(function (response) {
+                        var result = response.content.toJSON();
+                        console.log(result);
+                        resolve();
+                    }, function (e) {
+                        console.log("Error occurred " + e);
+                        reject(e);
+                    });                    
+                 
+                },error => {
+                    reject(error);
+                })
+            });                       
+        });        
+    }    
 }

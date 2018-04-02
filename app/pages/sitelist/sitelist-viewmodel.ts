@@ -70,5 +70,14 @@ export class SiteListViewModel extends Observable {
                 });            
             }
         }); 
-    }       
+    }
+    
+    public ExportToCloud(EventData){
+        SiteBackend.ExportToCloud().then(() => {
+            let toast = Toast.makeText("Export finished");
+            toast.show();             
+        },error =>{
+            dialogs.alert("Backup failed!");
+        });
+    }    
 }

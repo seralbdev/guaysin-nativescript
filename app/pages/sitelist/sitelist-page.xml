@@ -2,6 +2,7 @@
     <Page.ActionBar>
         <ActionBar>
             <ActionItem tap="{{ExportBackup}}" text="Export" android.position="popup"/>
+            <ActionItem tap="{{ExportToCloud}}" text="Export(cloud)" android.position="popup"/>
             <ActionItem tap="{{ImportBackup}}" text="Import" android.position="popup"/>
         </ActionBar>
     </Page.ActionBar>

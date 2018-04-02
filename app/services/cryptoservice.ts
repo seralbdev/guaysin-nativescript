@@ -4,11 +4,11 @@ var CryptoJS = require("crypto-js");
 export module CryptoServices{
         var secret:string;
         
-        function GetEncryptedSecret():string{
+        export function GetEncryptedSecret():string{
             return appSettings.getString("SECRET");   
         }
 
-        function SetEncryptedSecret(ciphertext:string){
+        export function SetEncryptedSecret(ciphertext:string){
             appSettings.setString("SECRET",ciphertext);    
         }
 
