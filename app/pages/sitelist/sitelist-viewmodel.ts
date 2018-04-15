@@ -79,5 +79,21 @@ export class SiteListViewModel extends Observable {
         },error =>{
             dialogs.alert("Export(cloud) failed!");
         });
+    }
+    
+    public ImportFromCloud(EventData){
+        dialogs.confirm("Restore backup?").then(result => {
+            if(result){
+                SiteBackend.ImportFromCloud().then(()=>{  
+                    let toast = Toast.makeText("Restore finished");
+                    toast.show();
+                    frameModule.topmost().navigate({
+                        moduleName: "pages/login/login-page"
+                    });
+                },error => {
+                    dialogs.alert("Restore failed!");
+                });
+            }
+        }); 
     }    
 }

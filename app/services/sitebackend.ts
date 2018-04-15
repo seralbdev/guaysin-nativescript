@@ -8,7 +8,7 @@ var http = require("http");
 export module SiteBackend{
 
     var CLOUD_BACKEND_PUSH_URL:string = "https://guaysinbackend1.azurewebsites.net/api/PushSites?code=8wgbzg4wovpMM9iLNgH96ApcK2YRi8nKwxj6OQag5EoHW6CwUkkVoQ==";
-    var CLOUD_BACKEND_PULL_URL:string = "https://guaysinbackend1.azurewebsites.net/api/GetSites?code=8wgbzg4wovpMM9iLNgH96ApcK2YRi8nKwxj6OQag5EoHW6CwUkkVoQ==";
+    var CLOUD_BACKEND_PULL_URL:string = "https://guaysinbackend1.azurewebsites.net/api/GetSites?code=mCb9xgHzd6f8x83awc8aqbWlOi74y7Djyt2iIB/tyxReYkCaBoiy8w==";
     
                   
     export function Initialize():Promise<any>{
@@ -243,23 +243,26 @@ export module SiteBackend{
     }
     
     export function ImportFromCloud():Promise<any>{
-        return new Promise<any>((resolve,reject)=>{
 
+        return new Promise<any>((resolve,reject) => {
+
+            //get site data from backend
             http.request({
                 url:CLOUD_BACKEND_PULL_URL,
                 method: "GET",
                 headers: {'Token':'token1','Content-Type':'application/json'}
-            }).then(function (response) {
-                
+            }).then(response => {
+
                 //read secret from header in response
                 var secret = response.headers["MasterS"];
                 CryptoServices.SetEncryptedSecret(secret);
 
                 //parse JSON array in response body
                 var cloudsites = JSON.parse(response.content);
-
-                //Clean local DB and insert sites
-                CleanSites().then(()=>{
+                
+                //Clean current DB content
+                CleanSites().then(() => {
+                    //Insert sites
                     cloudsites.forEach((cloudsite)=>{
                         let site = new Site(CryptoServices.Decode(cloudsite.SiteName),
                         CryptoServices.Decode(cloudsite.SiteUrl),
@@ -268,14 +271,15 @@ export module SiteBackend{
                         undefined);
                         SaveSite(site);                     
                     });
-    
-                    resolve();                    
-                });
+                    
+                    resolve();
 
-            }, function (e) {
-                console.log("Error occurred " + e);
-                reject(e);
-            });            
+                },error =>{
+                    reject(error);
+                });
+            },error=>{
+                reject(error);
+            });
         });
     }    
 }
